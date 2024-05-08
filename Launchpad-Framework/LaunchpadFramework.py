@@ -15,7 +15,7 @@ import time
 #----------------------------------------------------------------
 
 # Connect to the SQLite database
-conn = sqlite3.connect('./Manobloom.db')
+conn = sqlite3.connect('./Launchpad.db')
 c = conn.cursor()
 
 def handleNewUser(UserID, Username, Avatar, IsBot):
