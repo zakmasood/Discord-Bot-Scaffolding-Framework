@@ -1,0 +1,3 @@
+2024-05-08 07:14:17,389 - ERROR - Error updating reminder: no such column: reminder_text
+2024-05-08 07:14:17,412 - ERROR - Error performing CRUD operations: 'NoneType' object is not subscriptable
+2024-05-08 07:16:18,000 - ERROR - Error performing CRUD operations: 'NoneType' object is not subscriptable
