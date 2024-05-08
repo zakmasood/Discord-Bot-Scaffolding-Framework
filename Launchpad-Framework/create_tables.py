@@ -8,7 +8,7 @@ def create_manobloom_tables():
     cursor = connection.cursor()
     
     # SQL DDL statements
-    ddl_statements = """
+    ddlStatements = """
     -- User Table
     CREATE TABLE IF NOT EXISTS User (
         UserID BIGINT PRIMARY KEY,
@@ -80,7 +80,7 @@ def create_manobloom_tables():
     """
     
     # Executing the DDL statements
-    cursor.executescript(ddl_statements)
+    cursor.executescript(ddlStatements)
     
     # Committing the changes
     connection.commit()
