@@ -11,16 +11,22 @@ import sqlite3
 from datetime import datetime, timedelta
 from dateutil import parser
 import time
+# Middle DB access layer
+import dbAccessLayer
+from dbAccessLayer import createModeration
 
 #----------------------------------------------------------------
 
+
+# Connect to the SQLite database
+
 load_dotenv()
+
 token = os.getenv('DiscordToken')
 loggingChannelID = os.getenv('LoggingChannelID')
 muteRoleID = os.getenv('MuteRoleID')
 
-# Connect to the SQLite database
-conn = sqlite3.connect('./launchpad.db')
+conn = sqlite3.connect('./myModerationDatabase.db')
 c = conn.cursor()
 
 def handleNewUser(UserID, Username, Avatar, IsBot):
@@ -84,9 +90,70 @@ async def on_reaction_add(reaction, user):
         conn.commit()
     except sqlite3.Error as e:
         print(f"Error updating total reactions count: {e}")
-        
-        
-#--------------------------------[Commands]--------------------------------
+    
+#--------------------------------[Commands]------------------------------
 
+@bot.command()
+@commands.has_permissions(kick_members=True)
+async def moderate(ctx, action: str, member: discord.Member, *, reason=None):
+    """Moderate a user in the server"""
+    validActions = ["warn", "mute", "kick", "ban", "unmute"]
+    action = action.lower()
+
+    if action not in validActions:
+        await ctx.send(f"Invalid action '{action}'. Valid actions are: {', '.join(validActions)}")
+        return
+
+    if member is None or member == ctx.author:
+        await ctx.send(f"You cannot {action} yourself!")
+        return
+
+    serverID = ctx.guild.id
+    userID = member.id
+    moderatorID = ctx.author.id
+    actionUpper = action.upper()
+    createdAt = datetime.utcnow()
+
+    if reason is None:
+        reason = "No reason provided."
+
+    embed = discord.Embed(
+        title=f"User {actionUpper}ed",
+        description=f"You have been {action}ed by {ctx.author.mention} from {ctx.guild.name}",
+        color=discord.Color.red()
+    )
+    embed.add_field(name="Reason", value=reason)
+
+    createModeration(serverID, str(userID), actionUpper, reason, moderatorID, createdAt)
+
+    logChannel = bot.get_channel(loggingChannelID)
+    if logChannel:
+        logEmbed = discord.Embed(
+            title=f"User {actionUpper}ed",
+            description=f"{member.mention} has been {action}ed by {ctx.author.mention}",
+            color=discord.Color.red()
+        )
+        logEmbed.add_field(name="Reason", value=reason)
+        await logChannel.send(embed=logEmbed)
+
+    await member.send(embed=embed)
+
+    if action == "mute":
+        muteRole = discord.utils.get(ctx.guild.roles, name="Muted")
+        if muteRole:
+            await member.add_roles(muteRole)
+        else:
+            await ctx.send("Could not find the 'Muted' role.")
+    elif action == "kick":
+        await member.kick(reason=reason)
+    elif action == "ban":
+        await member.ban(reason=reason)
+    elif action == "unmute":
+        mute_role = discord.utils.get(ctx.guild.roles, name="Muted")
+        if mute_role:
+            await member.remove_roles(muteRole)
+        else:
+            await ctx.send("Could not find the 'Muted' role.")
+        
 # Run the bot with your bot token
 bot.run(token)

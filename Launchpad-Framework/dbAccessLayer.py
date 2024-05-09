@@ -2,7 +2,7 @@ import sqlite3
 import logging
 
 # Configure logging
-logging.basicConfig(filename='db_access.log', level=logging.ERROR,
+logging.basicConfig(filename='dbAccess.log', level=logging.ERROR,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 def connectDB():

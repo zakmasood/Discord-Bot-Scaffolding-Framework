@@ -42,7 +42,7 @@ from db_access_layer import *
 from create_tables import *
 
 # Configure logging
-logging.basicConfig(filename='test_harness.log', level=logging.ERROR,
+logging.basicConfig(filename='testHarness.log', level=logging.ERROR,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 
