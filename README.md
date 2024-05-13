@@ -1,6 +1,8 @@
 # 🚀 Launchpad: The Ultimate Discord.py Bot Framework 🌟
 🌿 The All-in-One Toolbox for Discord Bot Developers - Statefulness, Utility, Open Source 🌼
 
+![discord-bot](bot.png "discord bot scaffolding framework")
+
 Welcome to Launchpad by **ManoVersa**, the cutting-edge framework for building incredible Discord bots using Python and the powerful discord.py library! 🎉 Launchpad leverages the lightweight and serverless SQLite database management system to store and manage your bot's data efficiently. 📊
 
 ## Solving Discord Bot Development Challenges 💡
